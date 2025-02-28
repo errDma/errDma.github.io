@@ -3,9 +3,11 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 interface Movie {
+  id?: number;
   name: string;
   year?: string;
   img_url: string;
+  overview?: string;
 }
 
 export const useMovieSearch = () => {
@@ -28,10 +30,42 @@ export const useMovieSearch = () => {
       
       const data = await response.json();
       
-      // Ensure we're getting an array even if only one result
-      const moviesArray = Array.isArray(data) ? data : [data];
+      // Обработка вложенного массива массивов
+      let moviesArray: Movie[] = [];
+      
+      if (Array.isArray(data)) {
+        // Проходим по внешнему массиву
+        data.forEach(item => {
+          if (Array.isArray(item)) {
+            // Проходим по внутреннему массиву и добавляем каждый фильм
+            item.forEach(movie => {
+              // Очищаем img_url от лишних кавычек, если они есть
+              if (movie.img_url) {
+                movie.img_url = movie.img_url.replace(/^'|'$/g, '');
+              }
+              moviesArray.push(movie);
+            });
+          } else if (item && typeof item === 'object') {
+            // Если элемент - это одиночный объект фильма
+            if (item.img_url) {
+              item.img_url = item.img_url.replace(/^'|'$/g, '');
+            }
+            moviesArray.push(item as Movie);
+          }
+        });
+      } else if (data && typeof data === 'object') {
+        // Если API вернул одиночный объект
+        if (data.img_url) {
+          data.img_url = data.img_url.replace(/^'|'$/g, '');
+        }
+        moviesArray = [data as Movie];
+      }
       
       setMovies(moviesArray);
+      
+      if (moviesArray.length === 0) {
+        toast.info("По вашему запросу ничего не найдено");
+      }
     } catch (error) {
       console.error("Ошибка поиска фильмов:", error);
       toast.error("Не удалось выполнить поиск. Проверьте подключение к API.");
