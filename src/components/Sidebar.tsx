@@ -73,7 +73,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
             </li>
             <li>
               <a 
-                href="/about"
+                href="https://disk.yandex.ru/d/XDLSrr2do9XMgA"
                 className="block px-4 py-2 rounded-md hover:bg-white/5 transition-colors"
               >
                 О проекте
@@ -81,7 +81,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
             </li>
             <li>
               <a 
-                href="/contact"
+                href="https://t.me/mybagwallet"
                 className="block px-4 py-2 rounded-md hover:bg-white/5 transition-colors"
               >
                 Контакты
