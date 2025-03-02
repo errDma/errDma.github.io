@@ -1,63 +1,45 @@
 import { useState } from "react";
 import { toast } from "sonner";
 
-interface Movie {
-  id?: number;
-  name: string;
-  year?: string;
-  img_url: string;
-  overview?: string;
-}
-
 export const useMovieSearch = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [searchPerformed, setSearchPerformed] = useState(false);
 
-  const searchMovies = async (description: string) => {
+  const searchMovies = async (description) => {
     if (!description.trim()) return;
 
     setIsLoading(true);
-    setSearchPerformed(true);
-    
     try {
-      const response = await fetch(`https://chainikback-denis1488.amvera.io/film/?description=${encodeURI(description)}`);
-      
+      const url = `http://127.0.0.1:5000/film/?description=${encodeURIComponent(description)}`;
+      const response = await fetch(url);
+
+      // Проверка статуса ответа
       if (!response.ok) {
-        throw new Error("Ошибка получения данных");
+        throw new Error(`Ошибка HTTP! Статус: ${response.status}`);
       }
-      
+
       const data = await response.json();
-      
-      if (!Array.isArray(data)) {
-        throw new Error("Unexpected data format");
+      console.log("Ответ API:", data); // Логирование для отладки
+
+      // Гибкая обработка формата данных
+      let moviesArray = Array.isArray(data) ? data : data.films || [];
+      if (!Array.isArray(moviesArray)) {
+        throw new Error("Неожиданный формат данных: ожидался массив");
       }
-      
-      let moviesArray = data.map(movie => {
-        if (movie.img_url) {
-          movie.img_url = movie.img_url.replace(/^\'|\'$/g, '');
-        }
-        return movie;
-      });
-      
+
       setMovies(moviesArray);
-      
+
       if (moviesArray.length === 0) {
-        toast.info("Po vashemu zaprosu nichego ne nai denno");
+        toast.info("По вашему запросу ничего не найдено");
       }
     } catch (error) {
       console.error("Ошибка поиска фильмов:", error);
-      toast.error("Ne udavilos' vypolnit poisk. Proverite podklyuchenie k API.");
-      setMovies([]);  
+      toast.error("Не удалось выполнить поиск. Проверьте подключение к API.");
+      setMovies([]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  return {
-    movies,
-    isLoading,
-    searchPerformed,
-    searchMovies,
-  };
+  return { movies, isLoading, searchMovies };
 };
