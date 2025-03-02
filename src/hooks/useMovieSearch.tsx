@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -22,7 +21,7 @@ export const useMovieSearch = () => {
     setSearchPerformed(true);
     
     try {
-      const response = await fetch(`http://127.0.0.1:5000/film/?description=${encodeURIComponent(description)}`);
+      const response = await fetch(`http://127.0.0.1:5000/film/?description=${encodeURI(description)}`);
       
       if (!response.ok) {
         throw new Error("Ошибка получения данных");
@@ -30,46 +29,26 @@ export const useMovieSearch = () => {
       
       const data = await response.json();
       
-      // Обработка вложенного массива массивов
-      let moviesArray: Movie[] = [];
-      
-      if (Array.isArray(data)) {
-        // Проходим по внешнему массиву
-        data.forEach(item => {
-          if (Array.isArray(item)) {
-            // Проходим по внутреннему массиву и добавляем каждый фильм
-            item.forEach(movie => {
-              // Очищаем img_url от лишних кавычек, если они есть
-              if (movie.img_url) {
-                movie.img_url = movie.img_url.replace(/^'|'$/g, '');
-              }
-              moviesArray.push(movie);
-            });
-          } else if (item && typeof item === 'object') {
-            // Если элемент - это одиночный объект фильма
-            if (item.img_url) {
-              item.img_url = item.img_url.replace(/^'|'$/g, '');
-            }
-            moviesArray.push(item as Movie);
-          }
-        });
-      } else if (data && typeof data === 'object') {
-        // Если API вернул одиночный объект
-        if (data.img_url) {
-          data.img_url = data.img_url.replace(/^'|'$/g, '');
-        }
-        moviesArray = [data as Movie];
+      if (!Array.isArray(data)) {
+        throw new Error("Unexpected data format");
       }
+      
+      let moviesArray = data.map(movie => {
+        if (movie.img_url) {
+          movie.img_url = movie.img_url.replace(/^\'|\'$/g, '');
+        }
+        return movie;
+      });
       
       setMovies(moviesArray);
       
       if (moviesArray.length === 0) {
-        toast.info("По вашему запросу ничего не найдено");
+        toast.info("Po vashemu zaprosu nichego ne nai denno");
       }
     } catch (error) {
       console.error("Ошибка поиска фильмов:", error);
-      toast.error("Не удалось выполнить поиск. Проверьте подключение к API.");
-      setMovies([]);
+      toast.error("Ne udavilos' vypolnit poisk. Proverite podklyuchenie k API.");
+      setMovies([]);  
     } finally {
       setIsLoading(false);
     }
