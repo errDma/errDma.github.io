@@ -21,7 +21,7 @@ export const useMovieSearch = () => {
     setSearchPerformed(true);
     
     try {
-      const response = await fetch(`http://127.0.0.1:5000/film/?description=${encodeURI(description)}`);
+      const response = await fetch(`https://chainikback-denis1488.amvera.io/film/?description=${encodeURI(description)}`);
       
       if (!response.ok) {
         throw new Error("Ошибка получения данных");
