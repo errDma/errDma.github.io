@@ -22,7 +22,12 @@ export const useMovieSearch = () => {
     setSearchPerformed(true);
     
     try {
-      const url = `https://chainikback-denis1488.amvera.io/film/?description=${encodeURIComponent(description)}`;
+      // Используем CORS прокси для обхода ограничений
+      const corsProxy = "https://corsproxy.io/?";
+      const apiUrl = `https://chainikback-denis1488.amvera.io/film/?description=${encodeURIComponent(description)}`;
+      const url = corsProxy + encodeURIComponent(apiUrl);
+      
+      console.log("Выполняем запрос через CORS прокси:", url);
       const response = await fetch(url);
 
       if (!response.ok) {
@@ -44,6 +49,8 @@ export const useMovieSearch = () => {
         
         if (cleanedMovies.length === 0) {
           toast.info("По вашему запросу ничего не найдено");
+        } else {
+          toast.success(`Найдено фильмов: ${cleanedMovies.length}`);
         }
       } else {
         console.error("Получен неожиданный формат данных:", data);
@@ -52,7 +59,7 @@ export const useMovieSearch = () => {
       }
     } catch (error) {
       console.error("Ошибка поиска фильмов:", error);
-      toast.error("Не удалось выполнить поиск. Проверьте подключение к API.");
+      toast.error("Не удалось выполнить поиск. Проверьте подключение к интернету.");
       setMovies([]);
     } finally {
       setIsLoading(false);
