@@ -1,16 +1,20 @@
+
 import { useState } from "react";
 import { toast } from "sonner";
 
 export const useMovieSearch = () => {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchPerformed, setSearchPerformed] = useState(false);
 
   const searchMovies = async (description) => {
     if (!description.trim()) return;
 
     setIsLoading(true);
+    setSearchPerformed(true);
+    
     try {
-      const url = `http://127.0.0.1:5000/film/?description=${encodeURIComponent(description)}`;
+      const url = `https://chainikback-denis1488.amvera.io/film/?description=${encodeURIComponent(description)}`;
       const response = await fetch(url);
 
       // Проверка статуса ответа
@@ -21,11 +25,28 @@ export const useMovieSearch = () => {
       const data = await response.json();
       console.log("Ответ API:", data); // Логирование для отладки
 
-      // Гибкая обработка формата данных
-      let moviesArray = Array.isArray(data) ? data : data.films || [];
-      if (!Array.isArray(moviesArray)) {
-        throw new Error("Неожиданный формат данных: ожидался массив");
+      // Обработка формата данных API
+      let moviesArray = [];
+      
+      // Проверяем, является ли ответ массивом массивов
+      if (Array.isArray(data) && data.length > 0) {
+        // Собираем все фильмы из всех подмассивов
+        data.forEach(subArray => {
+          if (Array.isArray(subArray)) {
+            moviesArray = [...moviesArray, ...subArray];
+          }
+        });
+      } else if (Array.isArray(data)) {
+        moviesArray = data;
+      } else if (data.films && Array.isArray(data.films)) {
+        moviesArray = data.films;
       }
+
+      // Очистка URL изображений от лишних кавычек, если они есть
+      moviesArray = moviesArray.map(movie => ({
+        ...movie,
+        img_url: movie.img_url ? movie.img_url.replace(/^'|'$/g, '') : movie.img_url
+      }));
 
       setMovies(moviesArray);
 
@@ -41,5 +62,5 @@ export const useMovieSearch = () => {
     }
   };
 
-  return { movies, isLoading, searchMovies };
+  return { movies, isLoading, searchPerformed, searchMovies };
 };
