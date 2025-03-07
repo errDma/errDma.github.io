@@ -2,12 +2,20 @@
 import { useState } from "react";
 import { toast } from "sonner";
 
+interface Movie {
+  id: number;
+  name: string;
+  img_url: string;
+  year?: string;
+  overview: string;
+}
+
 export const useMovieSearch = () => {
-  const [movies, setMovies] = useState([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchPerformed, setSearchPerformed] = useState(false);
 
-  const searchMovies = async (description) => {
+  const searchMovies = async (description: string) => {
     if (!description.trim()) return;
 
     setIsLoading(true);
@@ -17,41 +25,30 @@ export const useMovieSearch = () => {
       const url = `https://chainikback-denis1488.amvera.io/film/?description=${encodeURIComponent(description)}`;
       const response = await fetch(url);
 
-      // Проверка статуса ответа
       if (!response.ok) {
         throw new Error(`Ошибка HTTP! Статус: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log("Ответ API:", data); // Логирование для отладки
+      console.log("Ответ API:", data);
 
-      // Обработка формата данных API
-      let moviesArray = [];
-      
-      // Проверяем, является ли ответ массивом массивов
-      if (Array.isArray(data) && data.length > 0) {
-        // Собираем все фильмы из всех подмассивов
-        data.forEach(subArray => {
-          if (Array.isArray(subArray)) {
-            moviesArray = [...moviesArray, ...subArray];
-          }
-        });
-      } else if (Array.isArray(data)) {
-        moviesArray = data;
-      } else if (data.films && Array.isArray(data.films)) {
-        moviesArray = data.films;
-      }
-
-      // Очистка URL изображений от лишних кавычек, если они есть
-      moviesArray = moviesArray.map(movie => ({
-        ...movie,
-        img_url: movie.img_url ? movie.img_url.replace(/^'|'$/g, '') : movie.img_url
-      }));
-
-      setMovies(moviesArray);
-
-      if (moviesArray.length === 0) {
-        toast.info("По вашему запросу ничего не найдено");
+      // Обработка данных API - ожидаем массив объектов с фильмами
+      if (Array.isArray(data)) {
+        // Очистка URL изображений от лишних кавычек
+        const cleanedMovies = data.map(movie => ({
+          ...movie,
+          img_url: movie.img_url ? movie.img_url.replace(/^'|'$/g, '') : movie.img_url
+        }));
+        
+        setMovies(cleanedMovies);
+        
+        if (cleanedMovies.length === 0) {
+          toast.info("По вашему запросу ничего не найдено");
+        }
+      } else {
+        console.error("Получен неожиданный формат данных:", data);
+        toast.error("Получен неожиданный формат данных от API");
+        setMovies([]);
       }
     } catch (error) {
       console.error("Ошибка поиска фильмов:", error);

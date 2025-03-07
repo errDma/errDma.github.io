@@ -2,9 +2,11 @@
 import MovieCard from "./MovieCard";
 
 interface Movie {
+  id: number;
   name: string;
   year?: string;
   img_url: string;
+  overview?: string;
 }
 
 interface MovieListProps {
@@ -54,6 +56,7 @@ const MovieList = ({ movies, isLoading, searchPerformed }: MovieListProps) => {
           title={movie.name}
           year={movie.year}
           posterUrl={movie.img_url}
+          overview={movie.overview}
           index={index}
         />
       ))}
