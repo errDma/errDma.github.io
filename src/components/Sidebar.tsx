@@ -1,3 +1,4 @@
+
 import { Github, X } from "lucide-react";
 import { useEffect } from "react";
 
@@ -74,6 +75,8 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
               <a 
                 href="https://disk.yandex.ru/d/XDLSrr2do9XMgA"
                 className="block px-4 py-2 rounded-md hover:bg-white/5 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 О проекте
               </a>
@@ -82,6 +85,8 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
               <a 
                 href="https://t.me/mybagwallet"
                 className="block px-4 py-2 rounded-md hover:bg-white/5 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 Контакты
               </a>
@@ -90,6 +95,8 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
               <a 
                 href="https://github.com/errDma/techno7AiFilmFinder"
                 className="flex items-center gap-2 px-4 py-2 rounded-md hover:bg-white/5 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 <Github className="w-4 h-4" />
                 GitHub
