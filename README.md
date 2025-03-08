@@ -6,7 +6,7 @@
 
 ## Ссылки
 * *Наши хосты*:
-  https://technofilmaifinder.vercel.app/
-  https://film-finder-shade.lovable.app/ (зеркало)
+  * https://technofilmaifinder.vercel.app/
+  * https://film-finder-shade.lovable.app/ (зеркало)
 * *Презентация:* https://disk.yandex.ru/d/XDLSrr2do9XMgA
 * *Контакты(telegram):* https://t.me/mybagwallet 
