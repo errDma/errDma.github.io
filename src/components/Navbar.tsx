@@ -23,7 +23,7 @@ const Navbar = () => {
         
         <div className="flex items-center">
           <h1 className="text-gradient font-semibold text-lg md:text-xl">
-            FilmFinder
+            <i>Проект на технострелку..</i>
           </h1>
         </div>
 
