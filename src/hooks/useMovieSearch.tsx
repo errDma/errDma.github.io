@@ -56,10 +56,8 @@ export const useMovieSearch = () => {
     setSearchPerformed(true);
     
     try {
-      // Используем CORS прокси для обхода ограничений
-      const corsProxy = "https://corsproxy.io/?";
-      const apiUrl = `https://chainikback-denis1488.amvera.io/film/?description=${encodeURIComponent(description)}`;
-      const url = corsProxy + encodeURIComponent(apiUrl);
+      const url = `https://chainikback-denis1488.amvera.io/film/?description=${encodeURIComponent(description)}`;
+      
       
       console.log("Выполняем запрос через CORS прокси:", url);
       const response = await fetch(url);
