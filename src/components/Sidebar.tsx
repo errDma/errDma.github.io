@@ -1,5 +1,5 @@
 
-import { X } from "lucide-react";
+import { Github, Telegram, X } from "lucide-react";
 import { useEffect } from "react";
 
 interface SidebarProps {
@@ -82,9 +82,19 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
             <li>
               <a 
                 href="https://t.me/mybagwallet"
-                className="block px-4 py-2 rounded-md hover:bg-white/5 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 rounded-md hover:bg-white/5 transition-colors"
               >
+                <Telegram className="w-4 h-4" />
                 Контакты
+              </a>
+            </li>
+            <li>
+              <a 
+                href="https://github.com/errDma/techno7AiFilmFinder"
+                className="flex items-center gap-2 px-4 py-2 rounded-md hover:bg-white/5 transition-colors"
+              >
+                <Github className="w-4 h-4" />
+                GitHub
               </a>
             </li>
           </ul>
