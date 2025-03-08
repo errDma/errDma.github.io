@@ -27,7 +27,7 @@ const Index = () => {
         <div className={`transition-opacity duration-700 ${showContent ? 'opacity-100' : 'opacity-0'}`}>
           <div className="flex flex-col items-center justify-center my-12 md:my-20">
             <h1 className="text-3xl md:text-4xl font-bold mb-4 text-gradient">
-              Поиск фильмов
+              TechnoFilms🔍
             </h1>
             <p className="text-white/70 text-center max-w-lg mb-8">
               Опишите фильм, который хотите найти, и мы подберем подходящие варианты.
